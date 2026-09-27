@@ -7,3 +7,12 @@ export function createUserModel({email,passwordHash,role='admin'}){
         createdAt:new Date().toISOString()
     }
 }
+
+
+
+export function returnUserWithoutPass(user) {
+
+    const newUsers = { id: user._id.toString(),email: user.email,createdAt:user.createdAt,role:user.role }
+        
+    return newUsers
+}
