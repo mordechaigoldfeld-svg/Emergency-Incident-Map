@@ -22,7 +22,7 @@ export async function tokenValidator(req, res, next) {
     try {
 
         const token = getToken(authorization)
-        const payload = tokenValidation(token)
+        const payload = tokenValidation(token)  
         req.user = payload
         next()
 
