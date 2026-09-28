@@ -1,5 +1,5 @@
 import { getIncidentAll } from "../DAL/incident_dal.js";
-import { createIncidentService, getIncidentByIdService, updateIncidentService } from "../SERVICE/incidentService.js";
+import { createIncidentService, deleteIncidentService, getIncidentByIdService, updateIncidentService } from "../SERVICE/incidentService.js";
 
 
 
@@ -76,6 +76,26 @@ export async function updateIncidentcntrl(req, res) {
 
         const result = await updateIncidentService(incidentId, userId, req.body)
         res.status(201).json(result)
+
+    } catch (error) {
+        if (error.message) {
+            res.status(error.status).json(error.message)
+        }
+        res.status(500).json({ "error": error })
+    }
+
+}
+
+
+export async function deleteIncidentCntrl(req, res) {
+
+    const { userId } = req.user
+    const { incidentId } = req.params
+
+    try {
+
+        const result = await deleteIncidentService(incidentId,userId)
+        res.status(200).json(result)
 
     } catch (error) {
         if (error.message) {

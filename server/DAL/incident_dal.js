@@ -43,6 +43,7 @@ export async function insertIncident(incident) {
 
 
 
+
 export async function updateIncident(id, updateFields) {
 
     updateFields.updatedAt = new Date().toISOString()
@@ -58,8 +59,11 @@ export async function updateIncident(id, updateFields) {
 
 export async function deleteIncident(id) {
 
-    return await incidents.deleteOne({ _id: new ObjectId(id) })
+    await incidents.deleteOne({ _id: new ObjectId(id) })
+
+    return {"succes deleted":id}
 
 }
+
 
 
