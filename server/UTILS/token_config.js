@@ -13,7 +13,7 @@ export function tokenGenerate(userId){
 }
 
 
-export function tokenValidtion(token){
+export function tokenValidation(token){
 
     return jwt.verify(token,JWT_SECRET)
 }

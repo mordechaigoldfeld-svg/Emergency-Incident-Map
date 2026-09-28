@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "../SERVICE/userService.js";
+import { getUser, loginUser, registerUser } from "../SERVICE/userService.js";
 
 
 
@@ -35,6 +35,26 @@ export async function registerUserCntrl(req, res) {
 
         const result = await registerUser(password, email, role, adminPass)
         res.status(201).json(result)
+
+    } catch (error) {
+        if (error.message) {
+            res.status(error.status).json(error.message)
+        }
+        res.status(500).json(`server error ${error}`)
+    }
+
+}
+
+
+
+export async function getUserCntrl(req, res) {
+
+    const { userId } = req.user
+
+    try {
+
+        const user = await getUser(userId)
+        res.status(200).json(user)
 
     } catch (error) {
         if (error.message) {

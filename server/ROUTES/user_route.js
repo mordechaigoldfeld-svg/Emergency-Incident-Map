@@ -1,6 +1,7 @@
-import { loginUserCntrl,registerUserCntrl } from "../CONTROLER/user_cntrl.js";
+import { getUserCntrl, loginUserCntrl,registerUserCntrl } from "../CONTROLER/user_cntrl.js";
 import express from 'express'
 import { validCreateFields,validLoginFields } from "../MIDDLEWARE/user_middle.js";
+import { tokenValidator } from "../MIDDLEWARE/auth_middle.js";
 
 
 
@@ -13,3 +14,6 @@ router.post('/login', validLoginFields, loginUserCntrl)
 
 
 router.post('/register',validCreateFields,registerUserCntrl)
+
+
+router.get('/me',tokenValidator,getUserCntrl)

@@ -1,4 +1,5 @@
-import { createUser, findByEmail } from "../DAL/user_dal.js";
+import { createUser, findByEmail, findById } from "../DAL/user_dal.js";
+import { returnUserWithoutPass } from "../MODELS/user.model.js";
 import { createError } from "../UTILS/createError.js";
 import { comparePassHash, createHash } from "../UTILS/password_config.js";
 import { isValidAdmin } from "../UTILS/role_verify.js";
@@ -41,7 +42,13 @@ export async function loginUser(password, email) {
 
 
 
-export async function getUser(params) {
+export async function getUser(id) {
+
+    const exists = await findById(id)
+    
+    if (!exists) throw createError(404, 'user not found');
+
+    return returnUserWithoutPass(exists)
 
 }
 
