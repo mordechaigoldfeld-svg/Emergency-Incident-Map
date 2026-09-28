@@ -5,6 +5,8 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import helmet from 'helmet'
 import userRoute from './ROUTES/user_route.js'
+import incidentRoute from './ROUTES/incident_route.js'
+import { tokenValidator } from './MIDDLEWARE/auth_middle.js'
 
 
 
@@ -19,7 +21,9 @@ app.use(helmet())
 app.use(express.json())
 
 
-app.use('/auth',userRoute)
+app.use('/auth', userRoute)
+app.use('/incidents',tokenValidator,incidentRoute)
+
 
 const server = createServer(app)
 
@@ -32,7 +36,7 @@ const io = new Server(server, {
 
 
 
-server.listen(PORT,()=>{
+server.listen(PORT, () => {
     console.log('server running.....')
-    
+
 })

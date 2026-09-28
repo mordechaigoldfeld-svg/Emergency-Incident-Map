@@ -1,5 +1,5 @@
 
-export function createIncidentModel({ title, description, category, status = 'open', location, }) {
+export function createIncidentModel({ title, description, category, status = 'open', location,createdBy }) {
 
     return {
         title,
@@ -7,6 +7,7 @@ export function createIncidentModel({ title, description, category, status = 'op
         category,
         status,
         location,
+        createdBy,
         createdAt: new Date().toISOString(),
         updatedAt: null,
 

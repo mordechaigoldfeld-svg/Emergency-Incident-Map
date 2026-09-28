@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import db from '../DB/mongodb_config.js'
+import { createIncidentModel } from '../MODELS/incident.model.js'
 
 
 const incidents = db.collection('incidents')
@@ -28,11 +29,13 @@ export async function getIncidentById(id) {
 
 
 
+
 export async function insertIncident(incident) {
 
-    const { insertedId } = await incidents.insertOne(incident)
-
-    return incident
+    const result = {...createIncidentModel(incident)}
+    const { insertedId } = await incidents.insertOne(result)
+    result._id = insertedId
+    return result
 
 }
 
