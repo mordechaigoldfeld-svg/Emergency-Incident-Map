@@ -1,4 +1,4 @@
-export function createUserModel({email,passwordHash,role='admin'}){
+export function createUserModel({email,passwordHash,role='user'}){
 
     return{
         email,

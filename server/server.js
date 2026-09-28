@@ -4,6 +4,7 @@ import 'dotenv/config'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import helmet from 'helmet'
+import userRoute from './ROUTES/user_route.js'
 
 
 
@@ -17,6 +18,8 @@ app.use(cors())
 app.use(helmet())
 app.use(express.json())
 
+
+app.use('/auth',userRoute)
 
 const server = createServer(app)
 

@@ -9,6 +9,9 @@ export async function createHash(password) {
 }
 
 
+
+
+
 export async function comparePassHash(password,hashPassword){
     return compare(password,hashPassword)
 }
