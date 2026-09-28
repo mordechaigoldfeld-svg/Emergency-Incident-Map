@@ -9,14 +9,15 @@ const incidents = db.collection('incidents')
 
 
 
-export async function getIncidentAll() {
-
-    return await incidents.find().toArray()
+export async function getIncidentAll(params) {
+    
+    
+    return await incidents.find(params).toArray()
 
 }
 
 
-// console.log(await getIncidentAll());
+// console.log(await getIncidentAll({category:'medical'}));
 
 
 
@@ -24,6 +25,9 @@ export async function getIncidentById(id) {
 
     return await incidents.findOne({ _id: new ObjectId(id) })
 }
+
+
+
 
 
 

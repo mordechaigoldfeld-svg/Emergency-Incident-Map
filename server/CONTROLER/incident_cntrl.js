@@ -9,9 +9,13 @@ import { createIncidentService, deleteIncidentService, getIncidentByIdService, u
 
 export async function getIncidentAllCntrl(req, res) {
 
+    const category  = req.query
+    
+    
+
     try {
 
-        const incidents = await getIncidentAll()
+        const incidents = await getIncidentAll(category)
 
         res.status(200).json(incidents)
 

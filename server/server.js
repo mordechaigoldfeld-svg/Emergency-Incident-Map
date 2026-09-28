@@ -25,6 +25,10 @@ app.use('/auth', userRoute)
 app.use('/incidents',tokenValidator,incidentRoute)
 
 
+// app.get('/test',(req,res)=>{
+//     const {id,name}= req.query
+//     res.json({'success':"health"})
+// })
 
 
 const server = createServer(app)

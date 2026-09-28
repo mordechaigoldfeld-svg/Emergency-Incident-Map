@@ -1,6 +1,6 @@
 import express from 'express'
 import { createIncidentCntrl, deleteIncidentCntrl, getIncidentAllCntrl, getIncidentByIdCntrl, updateIncidentcntrl } from '../CONTROLER/incident_cntrl.js'
-import { validCreateIncidentFields, validUpdateIncidentFields } from '../MIDDLEWARE/incident_middle.js'
+import { validCreateIncidentFields, validUpdateIncidentFields,validQuerytFields } from '../MIDDLEWARE/incident_middle.js'
 
 
 
@@ -9,7 +9,7 @@ const router = express.Router()
 export default router
 
 
-router.get('/', getIncidentAllCntrl)
+router.get('/',validQuerytFields, getIncidentAllCntrl)
 
 router.get('/:id', getIncidentByIdCntrl)
 
