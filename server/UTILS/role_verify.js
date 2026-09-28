@@ -12,5 +12,8 @@ export function isValidAdmin(role, adminPass) {
 
 }
 
-
+export function isOwner(user, incident) {
+    
+    return user._id.toString() === incident.createdBy || user.role === 'admin'
+}
 

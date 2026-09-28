@@ -25,6 +25,8 @@ app.use('/auth', userRoute)
 app.use('/incidents',tokenValidator,incidentRoute)
 
 
+
+
 const server = createServer(app)
 
 const io = new Server(server, {

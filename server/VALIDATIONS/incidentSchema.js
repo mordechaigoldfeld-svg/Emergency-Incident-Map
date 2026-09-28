@@ -12,3 +12,14 @@ export const createIncidentSchema = z.object({
         lng: z.number().min(-180).max(180)
     }),
 })
+
+export const updateIncidentSchema = z.object({
+    title: z.string({ invalid_type_error: 'invalid title' }).optional(),
+    description: z.string().min(5, 'enter a description').optional(),
+    category: z.enum(['fire', 'flood', 'accident', 'medical', 'other']).optional(),
+    status: z.enum(['open', 'in_progress', 'closed']).default('open').optional(),
+    location: z.object({
+        lat: z.number().min(-90).max(90),
+        lng: z.number().min(-180).max(180)
+    }).optional(),
+})

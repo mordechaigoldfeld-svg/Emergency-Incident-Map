@@ -45,6 +45,7 @@ export async function insertIncident(incident) {
 
 export async function updateIncident(id, updateFields) {
 
+    updateFields.updatedAt = new Date().toISOString()
     const updated = await incidents.updateOne({ _id: new ObjectId(id) }, { $set: updateFields })
 
     return updated

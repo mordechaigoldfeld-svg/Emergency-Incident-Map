@@ -1,5 +1,5 @@
 import { getIncidentAll } from "../DAL/incident_dal.js";
-import { createIncidentService, getIncidentByIdService } from "../SERVICE/incidentService.js";
+import { createIncidentService, getIncidentByIdService, updateIncidentService } from "../SERVICE/incidentService.js";
 
 
 
@@ -49,12 +49,12 @@ export async function getIncidentByIdCntrl(req, res) {
 export async function createIncidentCntrl(req, res) {
 
     const { title, description, category, location, status } = req.body
-    const {userId} = req.user
+    const { userId } = req.user
 
     try {
 
-        const incident = await createIncidentService({ title, description, category, location, status,createdBy:userId })
-            res.status(200).json(incident)
+        const incident = await createIncidentService({ title, description, category, location, status, createdBy: userId })
+        res.status(200).json(incident)
 
     } catch (error) {
         if (error.message) {
@@ -65,3 +65,23 @@ export async function createIncidentCntrl(req, res) {
 
 }
 
+
+
+export async function updateIncidentcntrl(req, res) {
+
+    const { userId } = req.user
+    const { incidentId } = req.params
+
+    try {
+
+        const result = await updateIncidentService(incidentId, userId, req.body)
+        res.status(201).json(result)
+
+    } catch (error) {
+        if (error.message) {
+            res.status(error.status).json(error.message)
+        }
+        res.status(500).json({ "error": error })
+    }
+
+}
