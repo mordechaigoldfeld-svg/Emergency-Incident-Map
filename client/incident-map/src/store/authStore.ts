@@ -17,7 +17,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YWJiOTVmMTNlMzQ1YWEwMmMzYWUyNWUiLCJpYXQiOjE3OTA2Nzg2NDQsImV4cCI6MTc5MDc2NTA0NH0.M-R-a19cmCyK5k3gkRfmohg0ncMLeID12sZLdjjEJNs',
+      token:null,
       user: null,
 
     
