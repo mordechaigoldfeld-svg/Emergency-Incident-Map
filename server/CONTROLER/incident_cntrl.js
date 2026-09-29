@@ -1,6 +1,6 @@
 import { getIncidentAll } from "../DAL/incident_dal.js";
 import { createIncidentService, deleteIncidentService, getIncidentByIdService, updateIncidentService } from "../SERVICE/incidentService.js";
-
+import { getIO } from "../UTILS/sockets.js";
 
 
 
@@ -9,9 +9,9 @@ import { createIncidentService, deleteIncidentService, getIncidentByIdService, u
 
 export async function getIncidentAllCntrl(req, res) {
 
-    const category  = req.query
-    
-    
+    const category = req.query
+
+
 
     try {
 
@@ -39,7 +39,7 @@ export async function getIncidentByIdCntrl(req, res) {
     try {
 
         const incident = await getIncidentByIdService(id)
-        res.status(200).json(incident)
+       return res.status(200).json(incident)
 
     } catch (error) {
         if (error.message) {
@@ -58,7 +58,8 @@ export async function createIncidentCntrl(req, res) {
     try {
 
         const incident = await createIncidentService({ title, description, category, location, status, createdBy: userId })
-        res.status(200).json(incident)
+        getIO().emit('incident:created', incident)
+        return res.status(201).json(incident)
 
     } catch (error) {
         if (error.message) {
@@ -79,6 +80,7 @@ export async function updateIncidentcntrl(req, res) {
     try {
 
         const result = await updateIncidentService(incidentId, userId, req.body)
+        getIO().emit('incident:updated',result)
         res.status(201).json(result)
 
     } catch (error) {
@@ -98,7 +100,8 @@ export async function deleteIncidentCntrl(req, res) {
 
     try {
 
-        const result = await deleteIncidentService(incidentId,userId)
+        const result = await deleteIncidentService(incidentId, userId)
+        getIO().emit('incident:deleted',result)
         res.status(200).json(result)
 
     } catch (error) {
