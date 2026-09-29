@@ -13,9 +13,9 @@ export default function Register() {
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('user')
   const [adminPass, setAdminPass] = useState('')
+  const [data, setData] = useState(null)
 
 
-  const setAuth = useAuthStore(s => s.setAuth)
   const navigate = useNavigate()
 
   const handlleSubmit = async (e: React.FormEvent) => {
@@ -26,10 +26,13 @@ export default function Register() {
       setLoading(true)
       setError(null)
 
-      const res = await registerApi({ email, password, role, ...(role === 'admin' && { adminPass })})
-      setAuth({ token: res.token, user: res.user })
+      const res = await registerApi({ email, password, role, ...(role === 'admin' && { adminPass }) })
 
-      navigate('/')
+      setData(res.message)
+      setTimeout(() => {
+        navigate('/login')
+      }, 2000)
+
 
     } catch (error: any) {
       setError(error.response?.data || `error: ${error}`)
@@ -44,6 +47,7 @@ export default function Register() {
     <div>
       {loading && (<div ><p>loading...</p></div>)}
       {error && <p style={{ color: "red", margin: 0 }}>{error}</p>}
+      {data && (<p>{data}</p>)}
       <form onSubmit={handlleSubmit}>
         <input type="email" value={email} required placeholder="test@gmail.com" onChange={(e) => setEmail(e.target.value)} />
         <input type="password" value={password} required placeholder="enter your password" onChange={(e) => setPassword(e.target.value)} />

@@ -23,7 +23,7 @@ export default function Login() {
       setError(null)
       const res = await loginApi({ email, password })
 
-      setAuth({ token: res.token, user: res.user })
+      setAuth({ token: res.token, user: res.email })
 
       navigate('/')
 

@@ -1,0 +1,15 @@
+.map-grid{
+
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    height: 100vh;
+}
+.nav{
+
+    background-color:aqua;
+}
+
+.main{
+
+    background-color: lightgreen;
+}
