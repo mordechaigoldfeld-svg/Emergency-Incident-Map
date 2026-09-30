@@ -12,7 +12,8 @@ export async function createIncidentApi(body: createIncidentType) {
         title: body.title,
         description: body.description,
         category: body.category,
-        location: body.location
+        location: body.location,
+        stautus:body.status
     }
     )
 
