@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { deleteIncidentApi, getAllOrByCategoryApi } from '../../api/incidentApi'
 import { type createdIncident } from '../../types/incidentTypes'
 import IncidentMarker from '../../components/incidentForm/incidentMarker/IncidentMarker'
+import { socket } from '../../socket.ts'
 
 
 function MapClickHandler({ onSelectLocation }: { onSelectLocation: (coords: { lat: number; lng: number }) => void }) {
@@ -48,7 +49,7 @@ export default function Map() {
       const res = await deleteIncidentApi(incidentId)
       loadData()
 
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error.response?.data || `error please check your email or password: ${error}`)
       console.log('login failed', error);
     }
@@ -57,7 +58,7 @@ export default function Map() {
 
 
 
-  const editHandle = (incident:createdIncident) =>{
+  const editHandle = (incident: createdIncident) => {
 
     setEditingIncident(incident);
     setSelectedCoords(null)
@@ -83,11 +84,17 @@ export default function Map() {
 
   }
 
+  
+  
   useEffect(() => {
-
+    
     loadData()
-
+    socket.on('incident:created', () => loadData())
+    socket.on('incident:updated', () => loadData())
+    socket.on('incident:deleted', () => loadData())
   }, [])
+
+
 
   const initial: [number, number] = [32.0853, 34.7818]
 
@@ -150,8 +157,9 @@ export default function Map() {
               location={selectedCoords}
               initialData={editingIncident}
               onClose={() => {
-                setSelectedCoords(null) 
-                setEditingIncident(null)}}
+                setSelectedCoords(null)
+                setEditingIncident(null)
+              }}
               onSuccess={() => {
                 setSelectedCoords(null)
                 setEditingIncident(null)
