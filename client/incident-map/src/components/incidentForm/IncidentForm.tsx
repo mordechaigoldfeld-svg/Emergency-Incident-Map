@@ -1,18 +1,35 @@
-import { useState } from 'react'
-import { createIncidentApi } from '../../api/incidentApi'
+import { useEffect, useState } from 'react'
+import { createIncidentApi, updateIncidentApi } from '../../api/incidentApi'
+import type { createdIncident } from '../../types/incidentTypes';
 
 interface IncidentFormProps {
   location: { lat: number; lng: number }
+  initialData?: createdIncident | null
   onClose: () => void
   onSuccess: () => void
 }
 
-export default function IncidentForm({ location, onClose, onSuccess }: IncidentFormProps) {
+export default function IncidentForm({ location, onClose, onSuccess, initialData }: IncidentFormProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState<'fire' | 'flood' | 'accident' | 'medical' | 'other'>('accident')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState('open')
+  const isEditMode = Boolean(initialData)
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title)
+      setDescription(initialData.description)
+      setCategory(initialData.category)
+    } else {
+      setTitle('')
+      setDescription('')
+      setCategory('accident')
+    }
+
+  }, [initialData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,15 +37,31 @@ export default function IncidentForm({ location, onClose, onSuccess }: IncidentF
     setError(null)
 
     try {
-      await createIncidentApi({
-        title,
-        description,
-        category,
-        location,
-        status:'open'
-      })
+
+      if (isEditMode && initialData) {
+        const updateBody = {
+          title,
+          description,
+          category,
+          status
+        }
+        await updateIncidentApi(updateBody, initialData._id)
+
+      } else {
+
+        await createIncidentApi({
+          title,
+          description,
+          category,
+          location,
+          status: 'open'
+        })
+
+
+      }
 
       onSuccess()
+
     } catch (err: any) {
       setError(err.response?.data?.message || 'ERROR')
     } finally {
@@ -36,15 +69,22 @@ export default function IncidentForm({ location, onClose, onSuccess }: IncidentF
     }
   }
 
+
+
+
+
+
+
+
   return (
     <div className="incident-sidebar">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3>דיווח על אירוע</h3>
+        <h3>{isEditMode ? 'update incident' : 'new incident'}</h3>
         <button type="button" onClick={onClose}>✕</button>
       </div>
 
       <p style={{ fontSize: '13px', color: '#666' }}>
-        מיקום: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+        מיקום: {location?.lat.toFixed(4)}, {location?.lng.toFixed(4)}
       </p>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -54,7 +94,7 @@ export default function IncidentForm({ location, onClose, onSuccess }: IncidentF
           <label>כותרת האירוע:</label>
           <input
             type="text"
-            required
+            required={!isEditMode}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="למשל: תאונת דרכים"
@@ -82,6 +122,14 @@ export default function IncidentForm({ location, onClose, onSuccess }: IncidentF
             <option value="other">אחר</option>
           </select>
         </div>
+        {isEditMode && <div>
+          <label>status</label>
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="open">open</option>
+            <option value="in_progress">in progress</option>
+            <option value="closed">closed</option>
+          </select>
+        </div>}
 
         <div style={{ marginTop: '1rem', display: 'flex', gap: '8px' }}>
           <button type="submit" disabled={loading}>

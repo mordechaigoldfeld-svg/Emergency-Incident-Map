@@ -4,8 +4,8 @@ import { MapContainer, TileLayer, useMapEvents, Marker } from 'react-leaflet'
 import './Map.css'
 import IncidentForm from '../../components/incidentForm/IncidentForm'
 import { useEffect, useState } from 'react'
-import { getAllOrByCategoryApi } from '../../api/incidentApi'
-import {type createdIncident } from '../../types/incidentTypes'
+import { deleteIncidentApi, getAllOrByCategoryApi } from '../../api/incidentApi'
+import { type createdIncident } from '../../types/incidentTypes'
 import IncidentMarker from '../../components/incidentForm/incidentMarker/IncidentMarker'
 
 
@@ -23,7 +23,7 @@ function MapClickHandler({ onSelectLocation }: { onSelectLocation: (coords: { la
 
 export default function Map() {
 
-  const user: any = useAuthStore(s => s.user)
+  const user: any = useAuthStore(s => s.user?.email)
   const logout = useAuthStore(s => s.logout)
   const navigate = useNavigate()
 
@@ -32,11 +32,35 @@ export default function Map() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
+  const [editingIncident, setEditingIncident] = useState<createdIncident | null>(null)
 
   const logoutHandler = () => {
 
     logout()
     navigate('/login')
+
+  }
+
+  const deleteHandle = async (incidentId: string) => {
+
+    try {
+
+      const res = await deleteIncidentApi(incidentId)
+      loadData()
+
+    } catch (error:any) {
+      setError(error.response?.data || `error please check your email or password: ${error}`)
+      console.log('login failed', error);
+    }
+
+  }
+
+
+
+  const editHandle = (incident:createdIncident) =>{
+
+    setEditingIncident(incident);
+    setSelectedCoords(null)
 
   }
 
@@ -67,7 +91,7 @@ export default function Map() {
 
   const initial: [number, number] = [32.0853, 34.7818]
 
-  const displayedIncidents = filter==='all'? createdIncidents: createdIncidents.filter((i)=>i.category=== filter)
+  const displayedIncidents = filter === 'all' ? createdIncidents : createdIncidents.filter((i) => i.category === filter)
 
   return (
     <div className='map-grid'>
@@ -77,9 +101,9 @@ export default function Map() {
           <button onClick={() => { logoutHandler() }}>logout </button>
         </div>
         <div>
-           <label>קטגוריה:</label>
+          <label>קטגוריה:</label>
           <select value={filter} onChange={(e: any) => setFilter(e.target.value)}>
-             <option value="all">הכל</option>
+            <option value="all">הכל</option>
             <option value="accident">תאונה</option>
             <option value="fire">שריפה</option>
             <option value="flood">הצפה</option>
@@ -103,12 +127,12 @@ export default function Map() {
           {selectedCoords && (
             <Marker position={[selectedCoords.lat, selectedCoords.lng]} />
           )}
-          {displayedIncidents.map((i)=>(
-            
-            <IncidentMarker key={i._id} incident={i}/>
+          {displayedIncidents.map((i) => (
+
+            <IncidentMarker key={i._id} incident={i} onEdit={editHandle} onDelete={deleteHandle} />
           ))}
         </MapContainer>
-        {selectedCoords && (
+        {(selectedCoords || editingIncident) && (
           <div style={{
             position: 'absolute',
             top: '10px',
@@ -124,9 +148,13 @@ export default function Map() {
           }}>
             <IncidentForm
               location={selectedCoords}
-              onClose={() => setSelectedCoords(null)}
+              initialData={editingIncident}
+              onClose={() => {
+                setSelectedCoords(null) 
+                setEditingIncident(null)}}
               onSuccess={() => {
                 setSelectedCoords(null)
+                setEditingIncident(null)
                 loadData()
 
               }}

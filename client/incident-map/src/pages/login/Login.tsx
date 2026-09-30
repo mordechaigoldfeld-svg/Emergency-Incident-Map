@@ -2,9 +2,16 @@ import { useState } from "react"
 import { useAuthStore } from "../../store/authStore"
 import { Link, useNavigate } from "react-router"
 import { loginApi } from "../../api/userApi"
+import { jwtDecode } from "jwt-decode"
 
 
 export default function Login() {
+
+  interface TokenPayload {
+  userId: string
+  iat: number
+  exp: number
+}
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,7 +30,15 @@ export default function Login() {
       setError(null)
       const res = await loginApi({ email, password })
 
-      setAuth({ token: res.token, user: res.email })
+      const decoded = jwtDecode<TokenPayload>(res.token)
+
+      const fullUser = {
+        userId: decoded.userId,
+        email: res.email,
+        role: res.role
+      }
+
+      setAuth({ token: res.token, user: fullUser })
 
       navigate('/')
 
