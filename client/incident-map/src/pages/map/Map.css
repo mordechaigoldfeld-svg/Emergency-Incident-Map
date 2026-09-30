@@ -1,4 +1,4 @@
-.map-grid{
+/* .map-grid{
 
     display: grid;
     grid-template-rows: 1fr 9fr;
@@ -12,4 +12,28 @@
 .main{
 
     background-color: lightgreen;
+} */
+
+
+
+.map-grid {
+  display: grid;
+  grid-template-rows: 1fr 9fr;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.nav {
+  background-color: aqua;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.main {
+  background-color: lightgreen;
+  height: 100%;
+  width: 100%;
 }
